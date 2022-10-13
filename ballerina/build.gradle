@@ -18,6 +18,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
+        mavenLocal()
         maven {
             url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
             credentials {
@@ -76,25 +77,11 @@ task copyExternalJars {
 }
 
 task updateTomlFiles {
-    doLast {
-        def newConfig = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
-        newConfig = newConfig.replace("@toml.version@", tomlVersion)
-        newConfig = newConfig.replace('@mysql.driver.version@', project.mySqlDriverVersion)
-        ballerinaTomlFile.text = newConfig
-    }
+    print("Skiping since this is not a ballerina project");
 }
 
 task commitTomlFiles {
-    doLast {
-        project.exec {
-            ignoreExitValue true
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "git commit -m \"[Automated] Update the native jar versions\" Ballerina.toml Dependencies.toml"
-            } else {
-                commandLine 'sh', '-c', "git commit -m '[Automated] Update the native jar versions' Ballerina.toml Dependencies.toml"
-            }
-        }
-    }
+    print("Skiping since this is not a ballerina project");
 }
 
 publishing {
@@ -117,9 +104,3 @@ publishing {
 }
 
 updateTomlFiles.dependsOn copyStdlibs
-
-build.dependsOn ":${packageName}-native:build"
-build.dependsOn "generatePomFileForMavenPublication"
-
-publishToMavenLocal.dependsOn build
-publish.dependsOn build
